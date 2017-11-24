@@ -158,6 +158,13 @@
 }
 
 - (void)selectionButtonPressed {
+    if([_gridController.browser.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:shouldChanged:)]) {
+        // 是否能选中
+        if (![_gridController.browser.delegate photoBrowser:_gridController.browser photoAtIndex:_index shouldChanged:!_selectedButton.selected])
+        {
+            return ;
+        }
+    }
     _selectedButton.selected = !_selectedButton.selected;
     [_gridController.browser setPhotoSelected:_selectedButton.selected atIndex:_index];
 }

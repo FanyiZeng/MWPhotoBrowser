@@ -1151,8 +1151,8 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
 #pragma mark - Interactions
 
 - (void)selectedButtonTapped:(id)sender {
+    // 求出当前 index
     UIButton *selectedButton = (UIButton *)sender;
-    selectedButton.selected = !selectedButton.selected;
     NSUInteger index = NSUIntegerMax;
     for (MWZoomingScrollView *page in _visiblePages) {
         if (page.selectedButton == selectedButton) {
@@ -1160,6 +1160,17 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
             break;
         }
     }
+    
+    // 不允许点击的 直接 return
+    if([_gridController.browser.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:shouldChanged:)]) {
+        if (![_gridController.browser.delegate photoBrowser:_gridController.browser photoAtIndex:index shouldChanged:!selectedButton.selected])
+        {
+            return ;
+        }
+    }
+    
+    // 改变状态
+    selectedButton.selected = !selectedButton.selected;
     if (index != NSUIntegerMax) {
         [self setPhotoSelected:selectedButton.selected atIndex:index];
     }
