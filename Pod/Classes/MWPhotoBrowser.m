@@ -704,6 +704,9 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     if (_displaySelectionButtons) {
         if ([self.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:selectedChanged:)]) {
             [self.delegate photoBrowser:self photoAtIndex:index selectedChanged:selected];
+            if ([_delegate respondsToSelector:@selector(photoBrowser:titleForPhotoAtIndex:)]) {
+                self.title = [_delegate photoBrowser:self titleForPhotoAtIndex:_currentPageIndex];
+            }
         }
     }
 }
@@ -1162,11 +1165,8 @@ static void * MWVideoPlayerObservation = &MWVideoPlayerObservation;
     }
     
     // 不允许点击的 直接 return
-    if([_gridController.browser.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:shouldChanged:)]) {
-        if (![_gridController.browser.delegate photoBrowser:_gridController.browser photoAtIndex:index shouldChanged:!selectedButton.selected])
-        {
-            return ;
-        }
+    if([self.delegate respondsToSelector:@selector(photoBrowser:photoAtIndex:shouldChanged:)]) {
+        if (![self.delegate photoBrowser:_gridController.browser photoAtIndex:index shouldChanged:!selectedButton.selected]){return ;}
     }
     
     // 改变状态
